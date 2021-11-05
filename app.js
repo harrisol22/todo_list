@@ -1,55 +1,48 @@
+//jshint esversion:6
 
 const express = require("express");
 const bodyParser = require("body-parser");
-
-// formatting is funky because this module is local
 const date = require(__dirname + "/date.js");
+
 const app = express();
 
-// declare variable up here to deal with scope issues
-// even though we are ADDING to the items array, it's not considering changing, so we can still use const
-const items = [];
-const workItems = [];
+app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
-// tells server to utilize things in the "public" folder
 app.use(express.static("public"));
-// tells app to use ejs as its view engine
-app.set("view engine", "ejs");
 
-// method to generate and display web app (send stuff out)
+const items = ["Buy Food", "Cook Food", "Eat Food"];
+const workItems = [];
+
 app.get("/", function(req, res) {
-  // sends variable kindOfDay and its value to list.ejs in views directory
-  res.render("list", {listTitle: date.getDate(), items: items});
 
-})
+const day = date.getDate();
 
+  res.render("list", {listTitle: day, newListItems: items});
 
-// method to handle post requests to the "/" route (get stuff in)
-app.post("/", function(req, res) {
+});
 
-  // grab the value from the text box in list.ejs
-  let newItem = req.body.newItem;
+app.post("/", function(req, res){
 
-  // we created a list parameter in list.ejs for the button; now we tap into the list parameter to see what list the item was added to, and add it to the appropriate route (/work or /)
+  const item = req.body.newItem;
+
   if (req.body.list === "Work") {
-    workItems.push(newItem);
+    workItems.push(item);
     res.redirect("/work");
   } else {
-    items.push(newItem)
+    items.push(item);
     res.redirect("/");
   }
+});
 
-})
+app.get("/work", function(req,res){
+  res.render("list", {listTitle: "Work List", newListItems: workItems});
+});
 
-// need one method for each route (each separate page)
-app.get("/work", function(req, res) {
+app.get("/about", function(req, res){
+  res.render("about");
+});
 
-  res.render("list", {listTitle: "Work", items: workItems})
-
-})
-
-
-app.listen(3000, function(){
-  console.log("Server started at port 3000.");
-})
+app.listen(3000, function() {
+  console.log("Server started on port 3000");
+});

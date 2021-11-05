@@ -1,32 +1,21 @@
-
 <%- include("header") -%>
 
-  <body>
+  <div class="box" id="heading">
+    <h1> <%= listTitle %> </h1>
+  </div>
 
-    <div class="box" id="heading">
-      <!-- marker that tells the file to replace shit with the value of the variable -->
-      <h1><%=listTitle%></h1>
-    </div>
-
-    <div class="box">
-      <!-- generating newItem for ejs has to happen in app.get -->
-      <!-- when scriplet tag is used, variables from app.js do not also need their own tags -->
-      <% for (var i = 0; i < items.length; i++) {%>
-        <div class="item">
-          <input type="checkbox">
-          <p><%=items[i]%></p>
-        </div>
-      <%}%>
+  <div class="box">
+    <% for (let i=0; i<newListItems.length; i++) { %>
+      <div class="item">
+        <input type="checkbox">
+        <p><%=  newListItems[i]  %></p>
+      </div>
+      <% } %>
 
       <form class="item" action="/" method="post">
-        <!-- autocomplete is the drop down suggestions when you start typing -->
-        <input type="text" name="newItem" placeholder="List Item" autocomplete="off">
-        <button type="submit" name="list" value=<%=listTitle%>>+</button>
+        <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
+        <button type="submit" name="list">+</button>
       </form>
+  </div>
 
-    </div>
-
-    <!-- add new items to do list -->
-  </body>
-
-  <%- include("footer") -%>
+<%- include("footer") -%>
